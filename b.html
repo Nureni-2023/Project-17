@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Black History Project</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      line-height: 1.6;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    header {
+      background-color: #004080;
+      color: white;
+      padding: 15px 20px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header h1 {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    /* Hamburger button */
+    .hamburger {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+    }
+    .hamburger svg {
+      width: 28px;
+      height: 28px;
+      stroke: blue;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.3s ease;
+    }
+    .hamburger .line1,
+    .hamburger .line2,
+    .hamburger .line3 {
+      transition: all 0.3s ease;
+      stroke: blue;
+    }
+    /* Animate lines to X when open */
+    .hamburger.open .line1 {
+      transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.open .line2 {
+      opacity: 0;
+    }
+    .hamburger.open .line3 {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    /* Desktop nav */
+    nav.desktop-menu {
+      display: flex;
+      gap: 20px;
+    }
+    nav.desktop-menu a {
+      color: white;
+      font-weight: 600;
+      padding: 6px 8px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    nav.desktop-menu a:hover {
+      background-color: #003366;
+    }
+
+    /* Mobile menu - hidden by default */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -280px; /* hide offscreen */
+      width: 280px;
+      height: 100vh;
+      background: white;
+      box-shadow: -3px 0 10px rgba(0,0,0,0.2);
+      padding: 60px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: right 0.3s ease;
+      z-index: 1050;
+    }
+    .mobile-menu.active {
+      right: 0;
+    }
+    .mobile-menu a {
+      color: #004080;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #e6f0ff;
+      transition: background-color 0.3s ease;
+    }
+    .mobile-menu a:hover {
+      background-color: #cce0ff;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      z-index: 1040;
+    }
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 90px auto 40px;
+      padding: 0 20px;
+    }
+    section {
+      margin-bottom: 40px;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      animation: fadeInUp 0.7s ease forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    section:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    section:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+    section:nth-child(3) {
+      animation-delay: 0.5s;
+    }
+
+    h2 {
+      color: #004080;
+      margin-bottom: 15px;
+      border-bottom: 3px solid #0066cc;
+      padding-bottom: 6px;
+      font-weight: 700;
+    }
+    p {
+      color: #333;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Contact form */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    label {
+      font-weight: 600;
+      color: #004080;
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      padding: 12px 14px;
+      font-size: 1rem;
+      border: 2px solid #0066cc;
+      border-radius: 8px;
+      resize: vertical;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      font-family: inherit;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #003366;
+      box-shadow: 0 0 8px rgba(0, 51, 102, 0.5);
+    }
+    textarea {
+      min-height: 120px;
+    }
+    button[type="submit"] {
+      background-color: #004080;
+      color: white;
+      border: none;
+      font-size: 1.1rem;
+      padding: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(0,64,128,0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      background-color: #0066cc;
+      box-shadow: 0 6px 20px rgba(0,102,204,0.6);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      .hamburger {
+        display: none;
+      }
+      nav.desktop-menu {
+        display: flex;
+      }
+      .mobile-menu, .overlay {
+        display: none;
+      }
+      main {
+        margin-top: 70px;
+      }
+    }
+    @media (max-width: 767px) {
+      nav.desktop-menu {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Black History Project</h1>
+    <nav class="desktop-menu" role="navigation" aria-label="Primary Navigation">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact Us</a>
+    </nav>
+    <button class="hamburger" aria-label="Toggle menu" aria-haspopup="true" aria-expanded="false" tabindex="0">
+      <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false" >
+        <line class="line1" x1="3" y1="7" x2="21" y2="7" />
+        <line class="line2" x1="3" y1="12" x2="21" y2="12" />
+        <line class="line3" x1="3" y1="17" x2="21" y2="17" />
+      </svg>
+    </button>
+  </header>
+
+  <nav class="mobile-menu" role="navigation" aria-label="Mobile Navigation">
+    <a href="#home" tabindex="0">Home</a>
+    <a href="#about" tabindex="0">About</a>
+    <a href="#gallery" tabindex="0">Gallery</a>
+    <a href="#contact" tabindex="0">Contact Us</a>
+  </nav>
+
+  <div class="overlay" tabindex="-1"></div>
+
+  <main>
+    <section id="home" tabindex="0">
+      <h2>Welcome to the Black History Project</h2>
+      <p>This project is dedicated to celebrating and educating about Black History through creativity, culture, and community.</p>
+    </section>
+
+    <section id="about" tabindex="0">
+      <h2>About Us</h2>
+      <p>Our team is committed to delivering inspiring content focused on Black History, partnering with institutions to ensure rich cultural representation.</p>
+    </section>
+
+    <section id="gallery" tabindex="0">
+      <h2>Gallery</h2>
+      <p>Explore artwork, photos, and creative projects highlighting significant moments and figures in Black History.</p>
+    </section>
+
+    <section id="contact" tabindex="0">
+      <h2>Contact Us</h2>
+      <form id="contactForm" novalidate>
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Your full name" required />
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Your email" required />
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Elements
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const overlay = document.querySelector('.overlay');
+
+    function openMenu() {
+      hamburger.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      mobileMenu.classList.add('active');
+      overlay.classList.add('active');
+      // Prevent scrolling when menu is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', () => {
+      if (mobileMenu.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    // Close on overlay click
+    overlay.addEventListener('click', closeMenu);
+
+    // Close mobile menu if a link is clicked
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Simple form validation & submission simulation
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const message = form.message.value.trim();
+      if (!name || !email || !message) {
+        alert('Please fill in all fields.');
+        return;
+      }
+      alert(`Thank you, ${name}! Your message has been sent.`);
+      form.reset();
+    });
+  </script>
+</body>
+</html>
